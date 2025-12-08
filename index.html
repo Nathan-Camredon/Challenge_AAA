@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triple A</title>
     <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,10 @@
                 Nombres de coeurs :  <br>
                 Fréquence Hz <br>
                 <br>
-                (Jauge CPU)
+                <div class="gauge">
+                    <div class="gauge-fill" id="cpu-fill"></div>
+                    <div class="gauge-cover" id="cpu-text">0%</div>
+                </div>
             </div>
         </div>
 
@@ -43,7 +47,10 @@
             <div class="ram-content">
                 RAM utilisée / RAM totale <br>
                 <br>
-                (Jauge RAM)
+                <div class="gauge">
+                    <div class="gauge-fill" id="ram-fill"></div>
+                    <div class="gauge-cover" id="ram-text">0%</div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,3 +78,4 @@
 
 </body>
 </html>
+
