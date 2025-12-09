@@ -1,0 +1,25 @@
+Informations
+
+CPU
+Nombres de cœurs CPU  :   heart_cpu
+Fréquence CPU	      :   freq_cpu
+Pourcentage CPU       :   precent_cpu
+
+RAM
+Ram utilisé en GB     :   use_ram
+Ram totale en GB      :   full_ram
+Pourcentage RAM	      :   percent_ram
+
+MACHINE
+Nom machine           :  name_machine
+Système		      :  name_os
+Version 	      :  name_systeme
+Heure de démarrage    :  start_system
+Temps écoulé démarrage:  uptime_system
+Adresse IP	      :  ip_adress
+
+SOFT
+Liste proc en cours   :  list_proc
+Conso CPU % 	      :  list_cpu
+Conso RAM %	      :  list_ram
+Top 3 des proc 	      :  top_3
