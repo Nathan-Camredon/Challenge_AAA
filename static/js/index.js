@@ -7,8 +7,8 @@ function updateGauge(idFill, idText, value) {
 
 // Test : valeurs aléatoires toutes les 1 sec
 setInterval(() => {
-    let cpuValue = Math.floor(Math.random() * 100);  
-    let ramValue = Math.floor(Math.random() * 100);
+    let cpuValue = Math.floor(Math.random() * 20);  
+    let ramValue = Math.floor(Math.random() * 40);
 
     updateGauge("cpu-fill", "cpu-text", cpuValue);
     updateGauge("ram-fill", "ram-text", ramValue);
