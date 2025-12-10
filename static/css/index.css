@@ -1,11 +1,10 @@
 /* Couleurs de base */
 :root {
-    --bg: #e0e5ec;
-    --shadow-light: #d7dcfa;
-    --shadow-dark: #929BA1;
-    --text: #4a4a4a;
+    --bg: #273445;
+    --shadow-light: #324257;
+    --shadow-dark: #1c2532; 
+    --text: #e8efff;        
 }
-
 /* Arrière-plan général */
 body {
     background: var(--bg);
