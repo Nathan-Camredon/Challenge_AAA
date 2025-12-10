@@ -12,7 +12,12 @@ def index():
 
     # CPU / RAM
     heart_cpu = psutil.cpu_count()
-    percent_cpu = psutil.cpu_percent(interval=1)
+    
+    # CORRECTION IMPORTANTE: Récupération du pourcentage CPU sans bloquer la route pendant 1 seconde.
+    psutil.cpu_percent() # Primes la mesure (premier appel)
+    time.sleep(0.1)      # Attend 100 millisecondes (au lieu de 1 seconde)
+    percent_cpu = psutil.cpu_percent() # Récupère la mesure (deuxième appel)
+    
     freq_cpu = psutil.cpu_freq().current
 
     memoire = psutil.virtual_memory()
@@ -43,10 +48,17 @@ def index():
             p_info = p.as_dict(attrs=['pid', 'name', 'cpu_percent', 'memory_percent'])
             if p_info['name']:
                 liste_procs.append(p_info)
-        except:
+        # CORRECTION: Utilisation des exceptions spécifiques pour psutil (meilleure pratique)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
 
-    top_3_cpu = sorted(liste_procs, key=lambda x: x['cpu_percent'], reverse=True)[:3]
+    # AJOUT: Tri de la liste complète par CPU décroissant (du plus consommateur au moins)
+    liste_procs = sorted(liste_procs, key=lambda x: x['cpu_percent'], reverse=True)
+    
+    # Extraction du Top 3 CPU à partir de la liste déjà triée
+    top_3_cpu = liste_procs[:3]
+    
+    # Tri du Top 3 RAM 
     top_3_ram = sorted(liste_procs, key=lambda x: x['memory_percent'], reverse=True)[:3]
 
     return render_template("index.html",
