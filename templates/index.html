@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triple A</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-</head>
+    </head>
 
 
 
@@ -15,7 +14,6 @@
 
 <div class="page-container">
 
-    <!-- HEADER -->
     <header class="header-box">
         <div class="main-info">
             <h1>{{name_machine}}</h1>
@@ -30,7 +28,6 @@
         </div>
     </header>
 
-    <!-- CPU + RAM -->
     <div class="hardware">
         <div class="cpu-box">
             <h2>CPU</h2>
@@ -58,28 +55,49 @@
         </div>
     </div>
 
-    <!-- SOFTWARE -->
     <div class="software">
         <h2>SOFT</h2>
 
         <div class="process-list">
             <h3>Liste des processus</h3>
 
-            <div class="process-table">
-                <div class="col">{{list_proc}}</div>
-                <div class="col2">CPU : {{list_cpu}}</div>
-                <div class="col2">RAM: {{list_ram}}</div>
+            <div class="process-table header">
+                <div class="col">Nom du Processus (PID)</div>
+                <div class="col2">CPU %</div>
+                <div class="col2">RAM %</div>
             </div>
+
+            {% for p in list_proc %}
+            <div class="process-table row">
+                <div class="col">{{ p.name }} ({{ p.pid }})</div>
+                <div class="col2">{{ "%.1f" | format(p.cpu_percent) }}</div>
+                <div class="col2">{{ "%.1f" | format(p.memory_percent) }}</div>
+            </div>
+            {% endfor %}
         </div>
 
         <div class="top5">
-            <h3>Top 3 Processus</h3>
-            <p>Top 3 Processus {{top_3}}</p>
+            <h3>Top 3 Processus (CPU)</h3>
+            
+            <div class="process-table header">
+                <div class="col">Nom du Processus (PID)</div>
+                <div class="col2">CPU %</div>
+                <div class="col2">RAM %</div>
+            </div>
+            
+            {% for p in top_3 %}
+            <div class="process-table row top-row">
+                <div class="col">{{ p.name }} ({{ p.pid }})</div>
+                <div class="col2">{{ "%.1f" | format(p.cpu_percent) }}</div>
+                <div class="col2">{{ "%.1f" | format(p.memory_percent) }}</div>
+            </div>
+            {% endfor %}
 
         </div>
     </div>
 
 </div>
 
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
