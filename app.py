@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import psutil
 import time
 import datetime
@@ -8,45 +8,59 @@ import socket
 #----------------------------------------------------------------------------
 #                   INITIALISATION DE L'APPLICATION
 #----------------------------------------------------------------------------
-app = Flask(__name__) # Création de l'instance Flask
+
+app = Flask(__name__)
+
+@app.route("/api/stats")
+def api_stats():
+    #----------------------------------------------------------------------------
+    #                       COLLECTE CPU / RAM
+    #----------------------------------------------------------------------------
+
+    cpu_percent = psutil.cpu_percent(interval=0.2)
+    ram_percent = psutil.virtual_memory().percent
+
+    return jsonify({
+        "cpu": cpu_percent,
+        "ram": ram_percent
+    })
 
 @app.route("/")
 def index():
 
-    #----------------------------------------------------------------------------
-    #                       COLLECTE CPU / RAM
-    #----------------------------------------------------------------------------
+    # CPU / RAM
     heart_cpu = psutil.cpu_count()
     
     psutil.cpu_percent()
-    time.sleep(0.1)      # permet de mettre une petite pause pour eviter que ça plante (mesure sur 0.1s)
+    time.sleep(0.1)      # Delai
     percent_cpu = psutil.cpu_percent() # Récupère la mesure 
     
     freq_cpu = psutil.cpu_freq().current
 
     memoire = psutil.virtual_memory()
-    full_ram = round(memoire.total / (1024**3), 2) # RAM totale en GB
-    use_ram = round(memoire.used / (1024**3), 2)   # RAM utilisée en GB
-    percent_ram = memoire.percent                  # Pourcentage d'utilisation RAM
+    full_ram = round(memoire.total / (1024**3), 2) #transition en GB 
+    use_ram = round(memoire.used / (1024**3), 2)
+    percent_ram = memoire.percent
 
-    #----------------------------------------------------------------------------
+     #----------------------------------------------------------------------------
     #                       COLLECTE SYSTEME
     #----------------------------------------------------------------------------
-    name_machine = platform.node()              # Nom de la machine
-    name_os = platform.system()                 # Nom du système d'exploitation (ex: Windows, Linux)
-    name_systeme = platform.release()           # Version du système
-    ip_adress = socket.gethostbyname(socket.gethostname()) # Adresse IP locale
+
+    name_machine = platform.node()
+    name_os = platform.system()
+    name_systeme = platform.release()
+    ip_adress = socket.gethostbyname(socket.gethostname())
 
     boot_time_timestamp = psutil.boot_time()
     heure_actuel_timestamp = time.time()
     uptime_secondes = heure_actuel_timestamp - boot_time_timestamp
-    uptime_systeme = round(uptime_secondes / 3600, 2) # Temps écoulé depuis le démarrage (en heures)
+    uptime_systeme = round(uptime_secondes / 3600, 2)
 
-    start_systeme = datetime.datetime.fromtimestamp(boot_time_timestamp) # Heure de démarrage du système
+    start_systeme = datetime.datetime.fromtimestamp(boot_time_timestamp)
 
-    name_user = len(psutil.users()) # Nombre d'utilisateurs connectés
+    name_user = len(psutil.users())
 
-    #----------------------------------------------------------------------------
+        #----------------------------------------------------------------------------
     #                       COLLECTE PROCESSUS
     #----------------------------------------------------------------------------
     liste_procs = [] #liste des processus
@@ -95,11 +109,10 @@ def index():
         full_ram=full_ram,
         percent_ram=percent_ram,
         list_proc=liste_procs,
-        list_cpu=top_3_cpu, # Top 3 CPU pour le débogage/affichage spécifique
-        list_ram=top_3_ram, # Top 3 RAM pour l'affichage spécifique
-        top_3=top_3_cpu     # Top 3 principal (utilisé dans la section Top 3 du template)
+        list_cpu=top_3_cpu,
+        list_ram=top_3_ram,
+        top_3=top_3_cpu
     )
 
 if __name__ == "__main__":
-    # Démarrage de l'application Flask
     app.run(host="0.0.0.0", port=5000)
