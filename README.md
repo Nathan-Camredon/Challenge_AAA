@@ -1,8 +1,8 @@
-# 🖥️ Triple A - Dashboard de Monitoring Système
+#  Triple A 
 
 Triple A est une application légère de surveillance système (monitoring) développée en Python. Elle permet de visualiser en temps réel l'état des ressources de votre machine (CPU, RAM) ainsi que les processus en cours d'exécution via une interface web moderne.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 * **Informations Système :** Affichage du nom de la machine, de l'OS, de l'adresse IP, de l'heure de démarrage et de l'uptime.
 * **Monitoring des Ressources :**
@@ -15,7 +15,7 @@ Triple A est une application légère de surveillance système (monitoring) dév
     * **Serveur Web (Flask) :** Mise à jour en temps réel via une API.
     * **Générateur Statique :** Création d'un rapport HTML instantané ("snapshot").
 
-## 📂 Structure du Projet
+## Structure du Projet
 
 - app.py               : Application Flask (Serveur Web dynamique)
 - monitor.py           : Script de génération de rapport statique
@@ -25,7 +25,7 @@ Triple A est une application légère de surveillance système (monitoring) dév
 - static/js/Gauge.js   : Script de gestion des jauges et rafraîchissement API
 - www/                 : Dossier de sortie pour le mode statique
 
-## ⚙️ Prérequis
+## Prérequis
 
 Assurez-vous d'avoir Python 3.x installé. Vous aurez besoin des bibliothèques suivantes :
 - psutil
@@ -37,7 +37,7 @@ pip install psutil flask jinja2
 
 ##  Utilisation
 
-### Option 1 : Mode Serveur Web (Recommandé)
+### Option 1 : Mode Serveur Web 
 Ce mode lance un serveur web local qui permet de consulter les statistiques en temps réel.
 1. Lancez l'application : python app.py
 2. Ouvrez votre navigateur sur : http://localhost:5000

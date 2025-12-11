@@ -1,87 +1,118 @@
+from flask import Flask, render_template, jsonify
 import psutil
 import time
 import datetime
 import platform
 import socket
-from jinja2 import Environment, FileSystemLoader
 
-# --------------------------------------------------------------
-# CPU & MEMOIRE
-# --------------------------------------------------------------
-heart_cpu = psutil.cpu_count()
-percent_cpu = psutil.cpu_percent(interval=1)
-freq_cpu = psutil.cpu_freq().current
+#----------------------------------------------------------------------------
+#                   INITIALISATION DE L'APPLICATION
+#----------------------------------------------------------------------------
 
-memoire = psutil.virtual_memory()
-full_ram = round(memoire.total / (1024**3), 2)
-use_ram = round(memoire.used / (1024**3), 2)
-percent_ram = memoire.percent
+app = Flask(__name__)
 
-# --------------------------------------------------------------
-# SYSTEME
-# --------------------------------------------------------------
-name_machine = platform.node()
-name_os = platform.system()
-name_systeme = platform.release()
-ip_adress = socket.gethostbyname(socket.gethostname())
+@app.route("/api/stats")
+def api_stats():
+    #----------------------------------------------------------------------------
+    #                       COLLECTE CPU / RAM
+    #----------------------------------------------------------------------------
 
-boot_time_timestamp = psutil.boot_time()
-heure_actuel_timestamp = time.time()
-uptime_secondes = heure_actuel_timestamp - boot_time_timestamp
-uptime_systeme = round(uptime_secondes / 3600, 2)
+    cpu_percent = psutil.cpu_percent(interval=0.2)
+    ram_percent = psutil.virtual_memory().percent
 
-start_systeme = datetime.datetime.fromtimestamp(boot_time_timestamp)
+    return jsonify({            #jisonification des stats, 
+        "cpu": cpu_percent,
+        "ram": ram_percent
+    })
 
-name_user = len(psutil.users())
+@app.route("/")
+def index():
 
-# --------------------------------------------------------------
-# PROCESSUS
-# --------------------------------------------------------------
-liste_procs = []
+    # CPU / RAM
+    heart_cpu = psutil.cpu_count()
+    
+    psutil.cpu_percent()
+    time.sleep(0.1)      # Delai
+    percent_cpu = psutil.cpu_percent() # Récupère la mesure 
+    
+    freq_cpu = psutil.cpu_freq().current
 
-for p in psutil.process_iter():
-    try:
-        p_info = p.as_dict(attrs=['pid', 'name', 'cpu_percent', 'memory_percent'])
-        if p_info['name']:
-            liste_procs.append(p_info)
-    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-        pass
+    memoire = psutil.virtual_memory()
+    full_ram = round(memoire.total / (1024**3), 2) #transition en GB 
+    use_ram = round(memoire.used / (1024**3), 2)
+    percent_ram = memoire.percent
 
-top_3_cpu = sorted(liste_procs, key=lambda x: x['cpu_percent'], reverse=True)[:3]
-top_3_ram = sorted(liste_procs, key=lambda x: x['memory_percent'], reverse=True)[:3]
+     #----------------------------------------------------------------------------
+    #                       COLLECTE SYSTEME
+    #----------------------------------------------------------------------------
 
-# --------------------------------------------------------------
-# LIAISON AVEC JINJA
-# --------------------------------------------------------------
+    name_machine = platform.node()
+    name_os = platform.system()
+    name_systeme = platform.release()
+    ip_adress = socket.gethostbyname(socket.gethostname())
 
-env = Environment(loader=FileSystemLoader("templates"))
-template = env.get_template("index.html")
+    boot_time_timestamp = psutil.boot_time()
+    heure_actuel_timestamp = time.time()
+    uptime_secondes = heure_actuel_timestamp - boot_time_timestamp
+    uptime_systeme = round(uptime_secondes / 3600, 2)
 
-html_output = template.render(
-    name_machine=name_machine,
-    name_os=name_os,
-    name_systeme=name_systeme,
-    ip_adress=ip_adress,
-    start_systeme=start_systeme,
-    uptime_systeme=uptime_systeme,
-    name_user=name_user,
-    heart_cpu=heart_cpu,
-    freq_cpu=freq_cpu,
-    percent_cpu=percent_cpu,
-    use_ram=use_ram,
-    full_ram=full_ram,
-    percent_ram=percent_ram,
-    list_proc=liste_procs,
-    list_cpu=top_3_cpu,
-    list_ram=top_3_ram,
-    top_3=top_3_cpu  # tu peux choisir ce que tu veux afficher
-)
+    start_systeme = datetime.datetime.fromtimestamp(boot_time_timestamp)
 
-# --------------------------------------------------------------
-# SAUVEGARDE HTML
-# --------------------------------------------------------------
+    name_user = len(psutil.users())
 
-with open("www/index.html", "w", encoding="utf-8") as f:
-    f.write(html_output)
+        #----------------------------------------------------------------------------
+    #                       COLLECTE PROCESSUS
+    #----------------------------------------------------------------------------
+    liste_procs = [] #liste des processus
 
-print("✔️ Page générée : www/index.html")
+    for p in psutil.process_iter():
+        try:
+            p_info = p.as_dict(attrs=['pid', 'name', 'cpu_percent', 'memory_percent'])
+            
+            # Ignorer le processus inactif du système 
+            if p_info['name'] == 'System Idle Process':
+                continue
+            
+            if p_info['name']:
+                liste_procs.append(p_info) # Ajout du processus à la liste
+        
+        # Gestion des erreurs potentielles lors de la lecture d'un processus
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
+
+    # Tri de la liste complète par CPU (du plus au moins consommateur)
+    liste_procs = sorted(liste_procs, key=lambda x: x['cpu_percent'], reverse=True)
+    
+    # Récupération du top 3 des processus par utilisation CPU
+    top_3_cpu = liste_procs[:3]
+    
+    # Tri du Top 3 par utilisation RAM (séparé du tri CPU)
+    top_3_ram = sorted(liste_procs, key=lambda x: x['memory_percent'], reverse=True)[:3]
+
+#----------------------------------------------------------------------------
+#                       RENDU HTML (JINJA2)
+#----------------------------------------------------------------------------
+
+    return render_template("index.html",
+        name_machine=name_machine,
+        name_os=name_os,
+        name_systeme=name_systeme,
+        ip_adress=ip_adress,
+        start_systeme=start_systeme,
+        uptime_systeme=uptime_systeme,
+        name_user=name_user,
+        heart_cpu=heart_cpu,
+        freq_cpu=freq_cpu,
+        percent_cpu=percent_cpu,
+        use_ram=use_ram,
+        full_ram=full_ram,
+        percent_ram=percent_ram,
+        list_proc=liste_procs,
+        list_cpu=top_3_cpu,
+        list_ram=top_3_ram,
+        top_3=top_3_cpu
+    )
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
