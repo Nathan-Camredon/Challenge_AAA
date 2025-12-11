@@ -2,9 +2,10 @@
 :root {
     --bg: #273445;
     --shadow-light: #324257;
-    --shadow-dark: #1c2532; 
-    --text: #e8efff;        
+    --shadow-dark: #1c2532;
+    --text: #e8efff;
 }
+
 /* Arrière-plan général */
 body {
     background: var(--bg);
@@ -13,7 +14,7 @@ body {
 }
 
 /* Conteneur principal */
-.page-container {
+.conteneur-page {
     width: 900px;
     margin: 30px auto;
     padding: 20px;
@@ -25,7 +26,7 @@ body {
 }
 
 /* HEADER */
-.header-box {
+.boite-entete {
     position: relative;
     padding: 25px;
     margin-bottom: 25px;
@@ -37,7 +38,7 @@ body {
 }
 
 /* Bloc infos machine */
-.main-info {
+.infos-principales {
     padding: 20px;
     border-radius: 15px;
     background: var(--bg);
@@ -47,7 +48,7 @@ body {
 }
 
 /* Petite boîte en haut à droite */
-.infos {
+.infos-secondaires {
     position: absolute;
     right: 20px;
     top: 20px;
@@ -60,17 +61,17 @@ body {
 }
 
 /* CPU + RAM */
-.hardware {
+.materiel {
     display: flex;
     justify-content: space-between;
     padding: 10px;
     margin-bottom: 25px;
     border-radius: 20px;
     background: var(--bg);
-
 }
 
-.cpu-box, .ram-box {
+.bloc-cpu,
+.bloc-ram {
     width: 40%;
     padding: 20px;
     border-radius: 20px;
@@ -80,17 +81,17 @@ body {
         -4px -4px 10px var(--shadow-light);
 }
 
-.cpu-content, .ram-content {
+.contenu-cpu,
+.contenu-ram {
     margin-top: 15px;
     padding: 15px;
     height: 180px;
     border-radius: 15px;
     background: var(--bg);
-
 }
 
 /* SOFTWARE */
-.software {
+.logiciels {
     padding: 20px;
     border-radius: 20px;
     background: var(--bg);
@@ -100,7 +101,7 @@ body {
 }
 
 /* Liste des processus */
-.process-list {
+.liste-processus {
     padding: 15px;
     border-radius: 15px;
     margin-bottom: 25px;
@@ -111,40 +112,37 @@ body {
 }
 
 /* Tableau interne */
-.process-table {
+.tableau-processus {
     display: grid;
     grid-template-columns: 70% 15% 15%;
     border-radius: 10px;
     margin-top: 15px;
     background: var(--bg);
-
 }
 
-.process-table .col {
+.tableau-processus .colonne {
     padding: 10px;
     text-align: center;
-            box-shadow:
+    box-shadow:
         4px 4px 10px var(--shadow-dark),
         -4px -4px 10px var(--shadow-light);
 }
-.process-table .col2 {
+
+.tableau-processus .colonne2 {
     padding: 10px;
     text-align: center;
-        box-shadow:
+    box-shadow:
         4px 4px 10px var(--shadow-dark),
         -4px -4px 10px var(--shadow-light);
 }
-/* Top 5 */
-.top5 {
-    padding: 15px;
-    border-radius: 15px;
-    background: var(--bg);
 
 
+.surlignage {
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* JAUGE CIRCULAIRE */
-.gauge {
+/* JAUGES */
+.jauge {
     width: 140px;
     height: 140px;
     border-radius: 50%;
@@ -154,17 +152,18 @@ body {
     box-shadow:
         inset -8px -8px 15px var(--shadow-light),
         inset 8px 8px 15px var(--shadow-dark);
+    overflow: hidden;
 }
 
-.gauge-fill {
+.jauge-remplissage {
     width: 100%;
     height: 100%;
-    background: conic-gradient(#4caf50 0deg, #4caf50 0deg, transparent 0deg);
     border-radius: 50%;
+    background: conic-gradient(#4caf50 0deg, transparent 0deg);
     transition: all 0.4s ease;
 }
 
-.gauge-cover {
+.jauge-texte {
     width: 85px;
     height: 85px;
     background: var(--bg);
@@ -182,5 +181,217 @@ body {
     box-shadow:
         -4px -4px 10px var(--shadow-light),
         4px 4px 10px var(--shadow-dark);
+    z-index: 3;
+}
 
+/* --- PAGINATION (Neumorphism Style) --- */
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    /* Centre la pagination */
+    margin: 25px 0 35px 0;
+    /* Ajout d'espace autour */
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    border-radius: 15px;
+    /* Grand arrondi pour le conteneur */
+    background: var(--bg);
+    box-shadow:
+        4px 4px 8px var(--shadow-dark),
+        -4px -4px 8px var(--shadow-light);
+}
+
+.page-item {
+    margin: 3px;
+    /* Espacement subtil entre les éléments */
+    border-radius: 12px;
+}
+
+.page-link {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+    /* Neumorphism pour l'état normal (légèrement enfoncé/plat) */
+    background: var(--bg);
+    box-shadow:
+        1px 1px 3px var(--shadow-dark),
+        -1px -1px 3px var(--shadow-light);
+}
+
+/* État de survol/clic (pour un effet enfoncé plus marqué) */
+.page-item:not(.disabled) .page-link:hover,
+.page-item:not(.disabled) .page-link:focus {
+    color: white;
+    /* Légère accentuation sur le texte */
+    background: var(--bg);
+    /* Effet d'enfoncement (inset) */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+/* Page ACTIVE (Neumorphism: enfoncé) */
+.page-item.active .page-link {
+    font-weight: bold;
+    color: #4caf50;
+    /* Utilisation d'une couleur d'accent pour la page courante */
+    cursor: default;
+    /* Effet d'enfoncement (inset) */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+/* État DÉSACTIVÉ */
+.page-item.disabled .page-link {
+    color: rgba(232, 239, 255, 0.4);
+    /* Texte très estompé */
+    cursor: not-allowed;
+    /* Rétablit l'ombre plate/légèrement soulevée */
+    box-shadow:
+        1px 1px 3px var(--shadow-dark),
+        -1px -1px 3px var(--shadow-light);
+}
+
+footer {
+    width: 900px; /* Aligné avec .conteneur-page */
+    margin: 30px auto 20px auto;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9em;
+    
+    /* Neumorphism : Légèrement enfoncé */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+.footer-contenu p {
+    margin: 5px 0;
+}
+
+
+/* ----- RESPONSIVE ----- */
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .conteneur-page {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .boite-entete {
+        padding: 15px;
+    }
+
+    .infos-secondaires {
+        position: relative;
+        right: auto;
+        left: auto;
+        top: auto;
+        margin: 0 auto 15px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .materiel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .bloc-cpu,
+    .bloc-ram {
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .jauge {
+        margin: 10px auto;
+        width: 110px;
+        height: 110px;
+    }
+
+    .jauge-texte {
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+    }
+
+    .liste-processus {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto 20px auto;
+    }
+
+    .tableau-processus {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .tableau-processus .colonne,
+    .tableau-processus .colonne2 {
+        margin-bottom: 8px;
+        padding: 12px;
+        text-align: center;
+    }
+}
+
+/* Ajustement pour le responsive (alignement avec la version mobile) */
+@media (max-width: 900px) {
+    footer {
+        width: 95%; /* Alignement avec le conteneur principal */
+    }
+}
+
+@media (max-width: 600px) {
+    footer {
+        width: 100%;
+        max-width: 450px; /* S'aligne avec les autres blocs centrés */
+        margin: 20px auto 10px auto;
+        border-radius: 15px;
+        padding: 15px;
+    }
+}
+
+/* TABLETTE */
+@media (max-width: 900px) {
+
+    .conteneur-page {
+        width: 95%;
+        margin: 0 auto;
+    }
+
+    .bloc-cpu,
+    .bloc-ram {
+        width: 48%;
+    }
+
+    .materiel {
+        gap: 10px;
+    }
 }
