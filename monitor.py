@@ -4,6 +4,7 @@ import time
 import datetime
 import platform
 import socket
+import os
 
 #----------------------------------------------------------------------------
 #                   INITIALISATION DE L'APPLICATION
@@ -90,6 +91,41 @@ def index():
     # Tri du Top 3 par utilisation RAM (séparé du tri CPU)
     top_3_ram = sorted(liste_procs, key=lambda x: x['memory_percent'], reverse=True)[:3]
 
+
+
+    # -----------------------------------------------------------------------
+    #                   ANALYSE DE FICHIERS
+    # -----------------------------------------------------------------------
+
+    # CORRECTION 1 : Mettre "." pour le dossier courant, ou un chemin absolu valide
+    folder = "." 
+    name = ['.txt', '.py', '.pdf', '.jpg']
+    compter = {ext: 0 for ext in name}          #Dictionnaire qui compte les fichier et les attributs a leur extensions 
+    total_folder = 0
+
+    if os.path.exists(folder):
+        for fichier in os.listdir(folder):
+            # On récupère l'extension du fichier (ex: .py)
+            _, ext = os.path.splitext(fichier)
+            ext = ext.lower() # mettre en minuscule pour comparer
+            
+            if ext in name:
+                compter[ext] += 1
+                total_folder += 1
+    
+    
+    stats_fichiers = []
+    for ext in name:
+        count = compter[ext]
+        # CORRECTION 2 : Vérifier 'total_folder' et non 'compter' (qui est un dictionnaire)
+        pourcentage = (count / total_folder * 100) if total_folder > 0 else 0
+        
+        stats_fichiers.append({
+            'extension': ext,
+            'count': count,
+            'percent': round(pourcentage, 1)
+        })
+
 #----------------------------------------------------------------------------
 #                       RENDU HTML (JINJA2)
 #----------------------------------------------------------------------------
@@ -111,7 +147,8 @@ def index():
         list_proc=liste_procs,
         list_cpu=top_3_cpu,
         list_ram=top_3_ram,
-        top_3=top_3_cpu
+        top_3=top_3_cpu,          # CORRECTION 3 : Ajout de la virgule ici
+        stats_fichiers=stats_fichiers
     )
 
 if __name__ == "__main__":
