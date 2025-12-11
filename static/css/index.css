@@ -2,7 +2,7 @@
 :root {
     --bg: #273445;
     --shadow-light: #324257;
-    --shadow-dark: #1c2532; 
+    --shadow-dark: #1c2532;
     --text: #e8efff;
 }
 
@@ -70,7 +70,8 @@ body {
     background: var(--bg);
 }
 
-.bloc-cpu, .bloc-ram {
+.bloc-cpu,
+.bloc-ram {
     width: 40%;
     padding: 20px;
     border-radius: 20px;
@@ -80,7 +81,8 @@ body {
         -4px -4px 10px var(--shadow-light);
 }
 
-.contenu-cpu, .contenu-ram {
+.contenu-cpu,
+.contenu-ram {
     margin-top: 15px;
     padding: 15px;
     height: 180px;
@@ -134,12 +136,6 @@ body {
         -4px -4px 10px var(--shadow-light);
 }
 
-/* Top 3 */
-.top3 {
-    padding: 15px;
-    border-radius: 15px;
-    background: var(--bg);
-}
 
 .surlignage {
     background: rgba(255, 255, 255, 0.05);
@@ -188,12 +184,112 @@ body {
     z-index: 3;
 }
 
+/* --- PAGINATION (Neumorphism Style) --- */
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    /* Centre la pagination */
+    margin: 25px 0 35px 0;
+    /* Ajout d'espace autour */
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    border-radius: 15px;
+    /* Grand arrondi pour le conteneur */
+    background: var(--bg);
+    box-shadow:
+        4px 4px 8px var(--shadow-dark),
+        -4px -4px 8px var(--shadow-light);
+}
+
+.page-item {
+    margin: 3px;
+    /* Espacement subtil entre les éléments */
+    border-radius: 12px;
+}
+
+.page-link {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+    /* Neumorphism pour l'état normal (légèrement enfoncé/plat) */
+    background: var(--bg);
+    box-shadow:
+        1px 1px 3px var(--shadow-dark),
+        -1px -1px 3px var(--shadow-light);
+}
+
+/* État de survol/clic (pour un effet enfoncé plus marqué) */
+.page-item:not(.disabled) .page-link:hover,
+.page-item:not(.disabled) .page-link:focus {
+    color: white;
+    /* Légère accentuation sur le texte */
+    background: var(--bg);
+    /* Effet d'enfoncement (inset) */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+/* Page ACTIVE (Neumorphism: enfoncé) */
+.page-item.active .page-link {
+    font-weight: bold;
+    color: #4caf50;
+    /* Utilisation d'une couleur d'accent pour la page courante */
+    cursor: default;
+    /* Effet d'enfoncement (inset) */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+/* État DÉSACTIVÉ */
+.page-item.disabled .page-link {
+    color: rgba(232, 239, 255, 0.4);
+    /* Texte très estompé */
+    cursor: not-allowed;
+    /* Rétablit l'ombre plate/légèrement soulevée */
+    box-shadow:
+        1px 1px 3px var(--shadow-dark),
+        -1px -1px 3px var(--shadow-light);
+}
+
+footer {
+    width: 900px; /* Aligné avec .conteneur-page */
+    margin: 30px auto 20px auto;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9em;
+    
+    /* Neumorphism : Légèrement enfoncé */
+    box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+}
+
+.footer-contenu p {
+    margin: 5px 0;
+}
+
+
 /* ----- RESPONSIVE ----- */
 
 /* MOBILE */
 @media (max-width: 600px) {
 
-    html, body {
+    html,
+    body {
         width: 100%;
         overflow-x: hidden;
     }
@@ -262,6 +358,23 @@ body {
         margin-bottom: 8px;
         padding: 12px;
         text-align: center;
+    }
+}
+
+/* Ajustement pour le responsive (alignement avec la version mobile) */
+@media (max-width: 900px) {
+    footer {
+        width: 95%; /* Alignement avec le conteneur principal */
+    }
+}
+
+@media (max-width: 600px) {
+    footer {
+        width: 100%;
+        max-width: 450px; /* S'aligne avec les autres blocs centrés */
+        margin: 20px auto 10px auto;
+        border-radius: 15px;
+        padding: 15px;
     }
 }
 

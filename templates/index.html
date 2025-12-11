@@ -2,18 +2,27 @@
 <html lang="fr">
 
 <head>
-    <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="30">  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triple A</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <style>
+        /* Petit style rapide pour masquer les pages non actives */
+        .hidden { display: none !important; }
+        .pagination-container { text-align: center; margin-top: 15px; }
+        .pagination { display: inline-flex; list-style: none; gap: 10px; padding: 0; }
+        .page-link { color: #e8efff; text-decoration: none; padding: 5px 10px; background: #324257; border-radius: 5px; }
+        .page-link:hover { background: #4caf50; }
+        /* Style du footer */
+        footer { margin-top: 40px; text-align: center; font-size: 0.9em; color: #889eb5; padding-bottom: 20px; }
+    </style>
 </head>
 
 <body>
 
     <div class="conteneur-page">
 
-        <!-- En-tête -->
         <header class="boite-entete">
             <div class="infos-principales">
                 <h1>{{name_machine}}</h1>
@@ -28,10 +37,8 @@
             </div>
         </header>
 
-        <!-- Matériel -->
         <div class="materiel">
 
-            <!-- Bloc CPU -->
             <div class="bloc-cpu">
                 <h2>Processeur (CPU)</h2>
                 <div class="contenu-cpu">
@@ -45,7 +52,6 @@
                 </div>
             </div>
 
-            <!-- Bloc RAM -->
             <div class="bloc-ram">
                 <h2>Mémoire vive (RAM)</h2>
                 <div class="contenu-ram">
@@ -60,12 +66,37 @@
         </div>
     </div>
 
-    <!-- Logiciels -->
-    <div class="logiciels">
+
+    <div class="conteneur-page" style="margin-top: 30px;">
+        <div class="analyse-fichiers">
+            <h3>Analyse des fichiers (.py, .txt, .pdf, .jpg)</h3>
+
+            <div class="tableau-processus entete">
+                <div class="colonne">Extension</div>
+                <div class="colonne2">Nombre</div>
+                <div class="colonne2">Répartition %</div>
+            </div>
+
+            {% for f in stats_fichiers %}
+            <div class="tableau-processus ligne">
+                <div class="colonne" style="font-weight: bold;">{{ f.extension }}</div>
+                <div class="colonne2">{{ f.count }}</div>
+                <div class="colonne2">
+                    <div style="background: #324257; width: 100%; height: 10px; border-radius: 5px; overflow: hidden;">
+                        <div style="width: {{ f.percent }}%; background: #4caf50; height: 100%;"></div>
+                    </div>
+                    <small>{{ f.percent }} %</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="logiciels conteneur-page" style="margin-top: 30px;">
 
         <h2>Logiciels</h2>
 
-        <!-- Liste complète des processus -->
         <div class="liste-processus">
             <h3>Liste des processus</h3>
 
@@ -75,42 +106,41 @@
                 <div class="colonne2">RAM %</div>
             </div>
 
-            {% for p in list_proc %}
-            <div class="tableau-processus ligne">
-                <div class="colonne">{{ p.name }} ({{ p.pid }})</div>
-                <div class="colonne2">{{ "%.1f" | format(p.cpu_percent) }}</div>
-                <div class="colonne2">{{ "%.1f" | format(p.memory_percent) }}</div>
+            <div id="process-container">
+                {% for p in list_proc %}
+                <div class="tableau-processus ligne process-item">
+                    <div class="colonne">{{ p.name }} ({{ p.pid }})</div>
+                    <div class="colonne2">{{ "%.1f" | format(p.cpu_percent) }}</div>
+                    <div class="colonne2">{{ "%.1f" | format(p.memory_percent) }}</div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
 
-        <!-- Top 3 CPU -->
-        <div class="top3">
-            <h3>Top 3 des processus les plus gourmands (CPU)</h3>
-
-            <div class="tableau-processus entete">
-                <div class="colonne">Nom du processus (PID)</div>
-                <div class="colonne2">CPU %</div>
-                <div class="colonne2">RAM %</div>
-            </div>
-
-            {% for p in top_3 %}
-            <div class="tableau-processus ligne surlignage">
-                <div class="colonne">{{ p.name }} ({{ p.pid }})</div>
-                <div class="colonne2">{{ "%.1f" | format(p.cpu_percent) }}</div>
-                <div class="colonne2">{{ "%.1f" | format(p.memory_percent) }}</div>
-            </div>
-            {% endfor %}
+        <div class="pagination-container">
+            <nav aria-label="Pagination des processus">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" id="prev-btn" aria-label="Précédent">&laquo; Précédent</a>
+                    </li>
+                    <li class="page-item">
+                        <span style="color: white; padding: 5px;" id="page-indicator">Page 1</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" id="next-btn" aria-label="Suivant">Suivant &raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
     </div>
 
-    <!-- Script des jauges -->
-    <script src="{{ url_for('static', filename='js/gauge.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Gauge.js') }}"></script>
 
     <script>
-        updateGauge("cpu-fill", {{ percent_cpu }});
-        updateGauge("ram-fill", {{ percent_ram }});
+        // Initialisation avec les valeurs Python au chargement
+        updateGauge("cpu-fill", "cpu-text", {{ percent_cpu }});
+        updateGauge("ram-fill", "ram-text", {{ percent_ram }});
 
         function refreshGauges() {
             fetch("/api/stats")
@@ -118,12 +148,74 @@
                 .then(data => {
                     updateGauge("cpu-fill", "cpu-text", data.cpu);
                     updateGauge("ram-fill", "ram-text", data.ram);
-                });
+                })
+                .catch(err => console.error("Erreur API:", err));
         }
 
-        refreshGauges();
+        // Rafraîchissement toutes les secondes
         setInterval(refreshGauges, 1000);
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const itemsPerPage = 10;
+            const items = document.querySelectorAll('.process-item');
+            const totalPages = Math.ceil(items.length / itemsPerPage);
+            let currentPage = 1;
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const pageIndicator = document.getElementById('page-indicator');
+
+            function showPage(page) {
+                // Masquer tout
+                items.forEach(item => item.classList.add('hidden'));
+
+                // Calculer les index
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+
+                // Afficher la page courante
+                for (let i = start; i < end && i < items.length; i++) {
+                    items[i].classList.remove('hidden');
+                }
+
+                // Mettre à jour le texte
+                pageIndicator.innerText = `Page ${page} / ${totalPages}`;
+            }
+
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Afficher la première page au chargement
+            showPage(1);
+        });
+    </script>
+
+    <footer>
+        <div class="footer-contenu">
+            <p>Développé par :</p>
+            <p>
+                Florian D'agostino, 
+                Nathan Camredon, 
+                Ludovic Dos Santos, 
+                Guillaume Ciampa
+            </p>
+        </div>
+    </footer>
 
 </body>
 </html>
