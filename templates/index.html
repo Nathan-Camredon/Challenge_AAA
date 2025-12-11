@@ -124,7 +124,7 @@
                         <a class="page-link" href="#" id="prev-btn" aria-label="Précédent">&laquo; Précédent</a>
                     </li>
                     <li class="page-item">
-                        <span style="color: white; padding: 5px;" id="page-indicator">Page 1</span>
+                        <span style="color: white; padding: 5px;" id="page-indicator"></span> 
                     </li>
                     <li class="page-item">
                         <a class="page-link" href="#" id="next-btn" aria-label="Suivant">Suivant &raquo;</a>
@@ -138,71 +138,9 @@
     <script src="{{ url_for('static', filename='js/Gauge.js') }}"></script>
 
     <script>
-        // Initialisation avec les valeurs Python au chargement
+        // Initialisation avec les valeurs Python au chargement (évite l'effet "vide" avant le premier fetch)
         updateGauge("cpu-fill", "cpu-text", {{ percent_cpu }});
         updateGauge("ram-fill", "ram-text", {{ percent_ram }});
-
-        function refreshGauges() {
-            fetch("/api/stats")
-                .then(r => r.json())
-                .then(data => {
-                    updateGauge("cpu-fill", "cpu-text", data.cpu);
-                    updateGauge("ram-fill", "ram-text", data.ram);
-                })
-                .catch(err => console.error("Erreur API:", err));
-        }
-
-        // Rafraîchissement toutes les secondes
-        setInterval(refreshGauges, 1000);
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const itemsPerPage = 10;
-            const items = document.querySelectorAll('.process-item');
-            const totalPages = Math.ceil(items.length / itemsPerPage);
-            let currentPage = 1;
-
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const pageIndicator = document.getElementById('page-indicator');
-
-            function showPage(page) {
-                // Masquer tout
-                items.forEach(item => item.classList.add('hidden'));
-
-                // Calculer les index
-                const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-
-                // Afficher la page courante
-                for (let i = start; i < end && i < items.length; i++) {
-                    items[i].classList.remove('hidden');
-                }
-
-                // Mettre à jour le texte
-                pageIndicator.innerText = `Page ${page} / ${totalPages}`;
-            }
-
-            prevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
-                }
-            });
-
-            nextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
-                }
-            });
-
-            // Afficher la première page au chargement
-            showPage(1);
-        });
     </script>
 
     <footer>
