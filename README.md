@@ -11,6 +11,9 @@ Triple A est une application légère de surveillance système (monitoring) dév
 * **Gestion des Processus :**
     * Liste complète des processus actifs avec leur consommation (CPU/RAM).
     * Mise en avant du **Top 3** des processus les plus gourmands.
+* **Analyse de fichier :**
+*    Aalyse d'un dossier selectionner dans le code
+*    Traduit les stats du fichier selon son "type"
 * **Deux modes de fonctionnement :**
     * **Serveur Web (Flask) :** Mise à jour en temps réel via une API.
     * **Générateur Statique :** Création d'un rapport HTML instantané ("snapshot").
