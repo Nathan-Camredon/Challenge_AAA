@@ -395,3 +395,9 @@ footer {
         gap: 10px;
     }
 }
+
+.hidden { display: none !important; }
+        .pagination-container { text-align: center; margin-top: 15px; }
+        .pagination { display: inline-flex; list-style: none; gap: 10px; padding: 0; }
+        .page-link { color: #e8efff; text-decoration: none; padding: 5px 10px; background: #324257; border-radius: 5px; }
+        .page-link:hover { background: #4caf50; }

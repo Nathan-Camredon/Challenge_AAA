@@ -7,16 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triple A</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <style>
-        /* Petit style rapide pour masquer les pages non actives */
-        .hidden { display: none !important; }
-        .pagination-container { text-align: center; margin-top: 15px; }
-        .pagination { display: inline-flex; list-style: none; gap: 10px; padding: 0; }
-        .page-link { color: #e8efff; text-decoration: none; padding: 5px 10px; background: #324257; border-radius: 5px; }
-        .page-link:hover { background: #4caf50; }
-        /* Style du footer */
-        footer { margin-top: 40px; text-align: center; font-size: 0.9em; color: #889eb5; padding-bottom: 20px; }
-    </style>
 </head>
 
 <body>
@@ -123,7 +113,6 @@
                     <li class="page-item">
                         <a class="page-link" href="#" id="prev-btn" aria-label="Précédent">&laquo; Précédent</a>
                     </li>
-                    <li class="page-item">
                         <span style="color: white; padding: 5px;" id="page-indicator"></span> 
                     </li>
                     <li class="page-item">
